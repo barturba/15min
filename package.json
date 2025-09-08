@@ -6,7 +6,7 @@
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --watch=false && cp ./app/assets/builds/application.css ./public/assets/application-3235d056.css"
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --watch=false && mkdir -p ./public/assets && cp ./app/assets/builds/application.css ./public/assets/application.css"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.13",
