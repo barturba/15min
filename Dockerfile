@@ -33,14 +33,11 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libyaml-dev node-gyp pkg-config python-is-python3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install JavaScript dependencies
-ARG NODE_VERSION=22.11.0
-ARG YARN_VERSION=1.22.22
-ENV PATH=/usr/local/node/bin:$PATH
-RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
-    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
-    npm install -g yarn@$YARN_VERSION && \
-    rm -rf /tmp/node-build-master
+# Install JavaScript dependencies (Bun)
+ARG BUN_VERSION=1.1.42
+ENV PATH=/usr/local/bun/bin:$PATH
+RUN curl -fsSL https://bun.sh/install | bash -s "bun-v${BUN_VERSION}" && \
+    ln -s /root/.bun/bin/bun /usr/local/bin/bun
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -49,8 +46,8 @@ RUN bundle install && \
     bundle exec bootsnap precompile --gemfile
 
 # Install node modules
-COPY package.json yarn.lock ./
-RUN yarn install --immutable
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
 # Copy application code
 COPY . .
@@ -62,7 +59,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
-RUN rm -rf node_modules
+RUN rm -rf node_modules .bun
 
 
 # Final stage for app image
