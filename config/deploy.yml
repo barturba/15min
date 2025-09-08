@@ -7,7 +7,7 @@ image: barturba/15min
 # Deploy to these servers.
 servers:
   web:
-    - 5.78.133.135 
+    - 5.78.133.135
   # job:
   #   hosts:
   #     - 192.168.0.1
