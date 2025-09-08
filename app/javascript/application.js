@@ -60,12 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Update times immediately
   updateTimes();
 
-  // Update work end time every second
-  setInterval(() => {
-    const now = new Date();
-    const workEndTime = document.getElementById('workEndTime');
-    workEndTime.value = formatDateTime(now);
-  }, 1000);
+  // Update both work start and work end times every second
+  setInterval(updateTimes, 1000);
 
   // Handle work start dropdown change
   const select = document.getElementById('workStartSelect');
