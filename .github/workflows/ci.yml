@@ -55,10 +55,17 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: '1.1.42'
-          cache: true
 
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
