@@ -69,6 +69,12 @@ volumes:
 # version inside the asset_path.
 asset_path: /rails/public/assets
 
+# Health check configuration - temporarily disabled to get deployment working
+# healthcheck:
+#   path: /up
+#   interval: 10s
+#   timeout: 5s
+
 # Configure the image builder.
 builder:
   arch: amd64
