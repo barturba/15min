@@ -83,12 +83,6 @@ builder:
   # Build image locally (simpler and more reliable)
   # remote: ssh://root@your-server-ip
 
-  # Enable Docker build cache for faster builds
-  cache:
-    type: local
-    # Store cache in local Docker cache
-    # dest: /tmp/.buildx-cache
-
   # Pass arguments and secrets to the Docker build process
   args:
     RUBY_VERSION: ruby-3.3.6
