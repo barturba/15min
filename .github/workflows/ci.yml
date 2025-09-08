@@ -73,13 +73,23 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Cache Bootsnap
+        uses: actions/cache@v4
+        with:
+          path: |
+            tmp/cache/bootsnap-compile-cache-iseq
+            tmp/cache/bootsnap-load-path-cache
+          key: ${{ runner.os }}-bootsnap-${{ hashFiles('**/*.rb') }}
+          restore-keys: |
+            ${{ runner.os }}-bootsnap-
+
       - name: Cache built assets
         uses: actions/cache@v4
         with:
           path: |
             app/assets/builds/
             public/assets/
-          key: ${{ runner.os }}-assets-${{ hashFiles('package.json', 'bun.lockb', 'app/assets/stylesheets/application.tailwind.css') }}
+          key: ${{ runner.os }}-assets-${{ hashFiles('package.json', 'bun.lockb', 'app/assets/stylesheets/application.tailwind.css', 'app/javascript/**/*.js', 'tailwind.config.js') }}
           restore-keys: |
             ${{ runner.os }}-assets-
 
@@ -125,6 +135,12 @@ jobs:
 
       - name: Install Kamal
         run: gem install --user-install kamal
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            network=host
 
       - name: Deploy with Kamal
         env:

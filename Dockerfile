@@ -14,10 +14,11 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 # Rails app lives here
 WORKDIR /rails
 
-# Install base packages
-RUN apt-get update -qq && \
+# Install base packages (cached layer)
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 sqlite3 && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    rm -rf /var/lib/apt/lists
 
 # Set production environment
 ENV RAILS_ENV="production" \
@@ -28,10 +29,11 @@ ENV RAILS_ENV="production" \
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-# Install packages needed to build gems and node modules
-RUN apt-get update -qq && \
+# Install packages needed to build gems and node modules (cached layer)
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libyaml-dev node-gyp pkg-config python-is-python3 unzip && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    rm -rf /var/lib/apt/lists
 
 # Install JavaScript dependencies (Bun)
 ARG BUN_VERSION=1.1.42
@@ -40,17 +42,23 @@ RUN curl -fsSL https://bun.sh/install | bash -s "bun-v${BUN_VERSION}" && \
     ln -s /root/.bun/bin/bun /usr/local/bin/bun && \
     ln -s /root/.bun/bin/bun /usr/local/bin/bunx
 
-# Install application gems
+# Copy dependency files first for better caching
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
+
+# Install application gems with caching
+RUN --mount=type=cache,target=/usr/local/bundle/cache \
+    bundle install --without development test && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-# Install node modules
+# Copy package files for Node dependencies
 COPY package.json bun.lockb ./
-RUN bun install --frozen-lockfile
 
-# Copy application code
+# Install node modules with caching
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
+
+# Copy application code (after dependencies are installed)
 COPY . .
 
 # Precompile bootsnap code for faster boot times
@@ -59,7 +67,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
+# Clean up build artifacts
 RUN rm -rf node_modules .bun
 
 
