@@ -4,6 +4,8 @@ A minimal, modern single-page Rails application for tracking work start and end 
 
 [![CI](https://github.com/barturba/15min/actions/workflows/ci.yml/badge.svg)](https://github.com/barturba/15min/actions/workflows/ci.yml)
 
+[🚀 **Live Demo**](https://15min.bartasurba.com)
+
 ## Features
 
 - **Work Start Time**: Configurable dropdown with options (15 min ago, 30 min ago, 1 hour ago, 2 hours ago)
