@@ -76,9 +76,10 @@ asset_path: /rails/public/assets
 # Configure the image builder.
 builder:
   arch: amd64
+  local: false
 
-  # # Build image via remote server (useful for faster amd64 builds on arm64 computers)
-  # remote: ssh://docker@docker-builder-server
+  # Build image via remote server (useful when Docker is not available locally)
+  remote: ssh://root@5.78.133.135
   #
   # # Pass arguments and secrets to the Docker build process
   # args:
