@@ -37,7 +37,8 @@ RUN apt-get update -qq && \
 ARG BUN_VERSION=1.1.42
 ENV PATH=/usr/local/bun/bin:$PATH
 RUN curl -fsSL https://bun.sh/install | bash -s "bun-v${BUN_VERSION}" && \
-    ln -s /root/.bun/bin/bun /usr/local/bin/bun
+    ln -s /root/.bun/bin/bun /usr/local/bin/bun && \
+    ln -s /root/.bun/bin/bun /usr/local/bin/bunx
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
