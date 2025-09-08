@@ -1,3 +1,50 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+/* Basic Tailwind-like styles for the work timer app */
+.min-h-screen { min-height: 100vh; }
+.bg-gray-50 { background-color: #f9fafb; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.p-4 { padding: 1rem; }
+.p-8 { padding: 2rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.mb-8 { margin-bottom: 2rem; }
+.space-y-3 > :not(:last-child) { margin-bottom: 0.75rem; }
+.space-y-6 > :not(:last-child) { margin-bottom: 1.5rem; }
+.max-w-md { max-width: 28rem; }
+.w-full { width: 100%; }
+.bg-white { background-color: #ffffff; }
+.bg-blue-50 { background-color: #eff6ff; }
+.border { border-width: 1px; }
+.border-blue-200 { border-color: #bfdbfe; }
+.border-gray-200 { border-color: #e5e7eb; }
+.border-gray-300 { border-color: #d1d5db; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+.text-center { text-align: center; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.text-blue-400 { color: #60a5fa; }
+.text-blue-800 { color: #1e40af; }
+.text-gray-400 { color: #9ca3af; }
+.text-gray-500 { color: #6b7280; }
+.text-gray-700 { color: #374151; }
+.text-gray-800 { color: #1f2937; }
+.text-gray-900 { color: #111827; }
+.cursor-pointer { cursor: pointer; }
+.opacity-0 { opacity: 0; }
+.opacity-100 { opacity: 1; }
+.transition { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.transition-colors { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.duration-300 { transition-duration: 300ms; }
+.hover\:bg-blue-100:hover { background-color: #dbeafe; }
+.hover\:bg-gray-200:hover { background-color: #e5e7eb; }
+.focus\:ring-blue-500:focus { --tw-ring-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); }
+
+.font-mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Inconsolata, 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', monospace; }
