@@ -55,6 +55,7 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: '1.1.42'
+          cache: true
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,6 +65,22 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Cache built assets
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/assets/builds/
+            public/assets/
+          key: ${{ runner.os }}-assets-${{ hashFiles('package.json', 'bun.lockb', 'app/assets/stylesheets/application.tailwind.css') }}
+          restore-keys: |
+            ${{ runner.os }}-assets-
+
+      - name: Build assets
+        run: |
+          bun install
+          bun run build
+          bun run build:css
 
       - name: Run tests
         env:
