@@ -10,7 +10,7 @@ servers:
     - your-server-ip 
   # job:
   #   hosts:
-  #     - 192.168.0.1
+  #     - your-job-server-host
   #   cmd: bin/jobs
 
 # Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
@@ -48,7 +48,7 @@ env:
 
     # Match this to any external database server to configure Active Record correctly
     # Use fifteen_min_app-db for a db accessory server on same machine via local kamal docker network.
-    # DB_HOST: 192.168.0.2
+    # DB_HOST: your-database-host
 
     # Log everything from Rails
     # RAILS_LOG_LEVEL: debug
@@ -95,9 +95,9 @@ builder:
 # accessories:
 #   db:
 #     image: mysql:8.0
-#     host: 192.168.0.2
+#     host: your-database-host
 #     # Change to 3306 to expose port to the world instead of just local network.
-#     port: "127.0.0.1:3306:3306"
+#     port: "localhost:3306:3306"
 #     env:
 #       clear:
 #         MYSQL_ROOT_HOST: '%'
@@ -110,7 +110,7 @@ builder:
 #       - data:/var/lib/mysql
 #   redis:
 #     image: redis:7.0
-#     host: 192.168.0.2
+#     host: your-redis-host
 #     port: 6379
 #     directories:
 #       - data:/data
