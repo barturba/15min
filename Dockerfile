@@ -11,15 +11,15 @@
 ARG RUBY_VERSION=ruby-3.2.9
 ARG BUN_VERSION=1.1.42
 
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+FROM docker.io/library/ruby:3.2.9-slim AS base
 
 # Rails app lives here
 WORKDIR /rails
 
 # Validate Ruby version matches .ruby-version file
 COPY .ruby-version ./
-RUN if [ -f .ruby-version ] && [ "$(cat .ruby-version)" != "$RUBY_VERSION" ]; then \
-      echo "Ruby version mismatch: expected $(cat .ruby-version), got $RUBY_VERSION"; \
+RUN if [ -f .ruby-version ] && [ "$(cat .ruby-version)" != "ruby-3.2.9" ]; then \
+      echo "Ruby version mismatch: expected $(cat .ruby-version), got ruby-3.2.9"; \
       exit 1; \
     fi
 
