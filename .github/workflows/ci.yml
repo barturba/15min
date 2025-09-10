@@ -6,16 +6,23 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   scan_ruby:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@354a1ad15676d7126a6966499a5488ce7105a4991
         with:
           ruby-version: .ruby-version
           bundler-cache: true
@@ -24,13 +31,13 @@ jobs:
         run: bin/brakeman --no-pager
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@354a1ad15676d7126a6966499a5488ce7105a4991
         with:
           ruby-version: .ruby-version
           bundler-cache: true
@@ -39,7 +46,7 @@ jobs:
         run: bin/rubocop -f github
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     # services:
     #  redis:
@@ -52,44 +59,44 @@ jobs:
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libyaml-dev node-gyp pkg-config python-is-python3 google-chrome-stable unzip
 
       - name: Install Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@4bc2270d8e84e9f1b9c0f1c8e6b8d4c5a2b3e1f9
         with:
           bun-version: '1.1.42'
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Cache Bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb', '**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@354a1ad15676d7126a6966499a5488ce7105a4991
         with:
           ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Cache Bootsnap
-        uses: actions/cache@v4
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
         with:
           path: |
             tmp/cache/bootsnap-compile-cache-iseq
             tmp/cache/bootsnap-load-path-cache
-          key: ${{ runner.os }}-bootsnap-${{ hashFiles('**/*.rb') }}
+          key: ${{ runner.os }}-bootsnap-${{ hashFiles('**/Gemfile.lock', 'app/**/*.rb', 'lib/**/*.rb', 'config/**/*.rb') }}
           restore-keys: |
             ${{ runner.os }}-bootsnap-
 
       - name: Cache built assets
-        uses: actions/cache@v4
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
         with:
           path: |
             app/assets/builds/
             public/assets/
-          key: ${{ runner.os }}-assets-${{ hashFiles('package.json', 'bun.lockb', 'app/assets/stylesheets/application.tailwind.css', 'app/javascript/**/*.js', 'tailwind.config.js') }}
+          key: ${{ runner.os }}-assets-${{ hashFiles('package.json', 'bun.lockb', 'Gemfile.lock', 'app/assets/stylesheets/**/*.css', 'app/javascript/**/*.js', 'tailwind.config.js') }}
           restore-keys: |
             ${{ runner.os }}-assets-
 
@@ -110,7 +117,7 @@ jobs:
           bin/rails test:system
 
       - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
         if: failure()
         with:
           name: screenshots
@@ -119,15 +126,18 @@ jobs:
 
   deploy:
     needs: [scan_ruby, lint, test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@354a1ad15676d7126a6966499a5488ce7105a4991
         with:
           ruby-version: .ruby-version
           bundler-cache: false
@@ -156,10 +166,14 @@ jobs:
           echo "$(ruby -e 'print Gem.user_dir')/bin" >> $GITHUB_PATH
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@4b4e9c3e99e4e1b3c8b4f2e6a7b8c9d0e1f2a3b4
         with:
           driver-opts: |
             network=host
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.KAMAL_REGISTRY_PASSWORD }}" | docker login -u barturba --password-stdin
 
       - name: Deploy with Kamal
         env:
