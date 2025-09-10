@@ -47,6 +47,11 @@ RUN --mount=type=cache,target=/var/cache/apt \
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs npm
 
+# Install Bun for jsbundling-rails
+RUN curl -fsSL https://bun.sh/install | bash -s "bun-v1.1.42" && \
+    ln -s /root/.bun/bin/bun /usr/local/bin/bun && \
+    ln -s /root/.bun/bin/bunx /usr/local/bin/bunx
+
 # Copy dependency files first for better caching
 COPY Gemfile Gemfile.lock ./
 
