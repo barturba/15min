@@ -45,7 +45,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
 
 # Install Node.js and npm for asset compilation
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs npm
 
 # Copy dependency files first for better caching
 COPY Gemfile Gemfile.lock ./
