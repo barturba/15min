@@ -139,7 +139,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           : > ~/.ssh/known_hosts
           for t in rsa ecdsa ed25519; do ssh-keyscan -T 15 -t $t ${{ secrets.KAMAL_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true; done
-          for t in rsa ecdsa ed25519; do ssh-keyscan -T 15 -t $t your-server-ip >> ~/.ssh/known_hosts 2>/dev/null || true; done
 
       - name: Install Kamal
         run: |
