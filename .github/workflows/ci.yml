@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@354a1ad15676d7126a6966499a5488ce7105a4991
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@354a1ad15676d7126a6966499a5488ce7105a4991
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
@@ -59,7 +59,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libyaml-dev node-gyp pkg-config python-is-python3 google-chrome-stable unzip
 
       - name: Install Bun
-        uses: oven-sh/setup-bun@4bc2270d8e84e9f1b9c0f1c8e6b8d4c5a2b3e1f9
+        uses: oven-sh/setup-bun@v1
         with:
           bun-version: '1.1.42'
 
@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Cache Bun dependencies
-        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+        uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb', '**/package.json') }}
@@ -75,13 +75,13 @@ jobs:
             ${{ runner.os }}-bun-
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@354a1ad15676d7126a6966499a5488ce7105a4991
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Cache Bootsnap
-        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+        uses: actions/cache@v4
         with:
           path: |
             tmp/cache/bootsnap-compile-cache-iseq
@@ -91,7 +91,7 @@ jobs:
             ${{ runner.os }}-bootsnap-
 
       - name: Cache built assets
-        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+        uses: actions/cache@v4
         with:
           path: |
             app/assets/builds/
@@ -117,7 +117,7 @@ jobs:
           bin/rails test:system
 
       - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: screenshots
@@ -137,7 +137,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@354a1ad15676d7126a6966499a5488ce7105a4991
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: false
@@ -166,7 +166,7 @@ jobs:
           echo "$(ruby -e 'print Gem.user_dir')/bin" >> $GITHUB_PATH
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@4b4e9c3e99e4e1b3c8b4f2e6a7b8c9d0e1f2a3b4
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             network=host
