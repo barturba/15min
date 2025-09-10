@@ -113,6 +113,7 @@ jobs:
           echo "Installing JavaScript dependencies..."
           npm ci --include=optional
           npm install @parcel/watcher --save-dev
+          npm install lightningcss --save-dev
 
           echo "Building JavaScript assets..."
           npm run build
