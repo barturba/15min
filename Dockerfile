@@ -9,7 +9,6 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=ruby-3.2.9
-ARG BUN_VERSION=1.1.38
 
 FROM docker.io/library/ruby:3.2.9-slim AS base
 
@@ -44,11 +43,9 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt-get install --no-install-recommends -y build-essential git libyaml-dev node-gyp pkg-config python-is-python3 unzip && \
     rm -rf /var/lib/apt/lists
 
-# Install JavaScript dependencies (Bun)
-ENV PATH=/usr/local/bun/bin:$PATH
-RUN curl -fsSL https://bun.sh/install | bash -s "bun-v${BUN_VERSION}" && \
-    ln -s /root/.bun/bin/bun /usr/local/bin/bun && \
-    ln -s /root/.bun/bin/bun /usr/local/bin/bunx
+# Install Node.js and npm for asset compilation
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
 
 # Copy dependency files first for better caching
 COPY Gemfile Gemfile.lock ./
@@ -60,11 +57,11 @@ RUN --mount=type=cache,target=/usr/local/bundle/cache \
     bundle exec bootsnap precompile --gemfile
 
 # Copy package files for Node dependencies
-COPY package.json bun.lockb ./
+COPY package.json package-lock.json ./
 
 # Install node modules with caching
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
 # Copy application code (after dependencies are installed)
 COPY . .
@@ -76,7 +73,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN SECRET_KEY_BASE=$(openssl rand -base64 32) ./bin/rails assets:precompile
 
 # Clean up build artifacts
-RUN rm -rf node_modules .bun
+RUN rm -rf node_modules
 
 
 # Final stage for app image

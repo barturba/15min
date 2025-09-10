@@ -59,21 +59,22 @@ jobs:
       - name: Install packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libyaml-dev node-gyp pkg-config python-is-python3 google-chrome-stable unzip
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: '1.1.38'
+          node-version: '18'
+          cache: 'npm'
 
       - name: Checkout code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
-      - name: Cache Bun dependencies
+      - name: Cache npm dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json', '**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-bun-
+            ${{ runner.os }}-npm-
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -97,7 +98,7 @@ jobs:
           path: |
             app/assets/builds/
             public/assets/
-          key: ${{ runner.os }}-assets-${{ hashFiles('package.json', 'bun.lockb', 'Gemfile.lock', 'app/assets/stylesheets/**/*.css', 'app/javascript/**/*.js', 'tailwind.config.js') }}
+          key: ${{ runner.os }}-assets-${{ hashFiles('package.json', 'package-lock.json', 'Gemfile.lock', 'app/assets/stylesheets/**/*.css', 'app/javascript/**/*.js', 'tailwind.config.js') }}
           restore-keys: |
             ${{ runner.os }}-assets-
 
@@ -109,19 +110,14 @@ jobs:
             exit 1
           fi
 
-          if [ ! -f "bun.lockb" ]; then
-            echo "Error: bun.lockb not found"
-            exit 1
-          fi
-
           echo "Installing JavaScript dependencies..."
-          bun install
+          npm ci
 
           echo "Building JavaScript assets..."
-          bun run build
+          npm run build
 
           echo "Building CSS assets..."
-          bun run build:css
+          npm run build:css
 
           echo "Validating asset compilation..."
           if [ ! -d "app/assets/builds" ] || [ ! -f "app/assets/builds/application.js" ]; then
