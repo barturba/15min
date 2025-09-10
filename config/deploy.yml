@@ -2,7 +2,7 @@
 service: 15min
 
 # Name of the container image.
-image: barturba/15min
+image: ghcr.io/barturba/15min
 
 # Deploy to these servers.
 servers:
@@ -23,13 +23,13 @@ proxy:
 
 # Credentials for your image host.
 registry:
-  # Specify the registry server, if you're not using Docker Hub
-  # server: registry.digitalocean.com / ghcr.io / ...
+  # Specify the registry server for GitHub Container Registry
+  server: ghcr.io
   username: barturba
 
-  # Always use an access token rather than real password when possible.
+  # Use GitHub personal access token for authentication
   password:
-    - KAMAL_REGISTRY_PASSWORD
+    - GITHUB_TOKEN
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:

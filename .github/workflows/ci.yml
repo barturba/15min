@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
@@ -152,6 +153,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     permissions:
       contents: read
+      packages: write
       id-token: write
 
     steps:
@@ -193,13 +195,13 @@ jobs:
           driver-opts: |
             network=host
 
-      - name: Log in to Docker Hub
+      - name: Log in to GitHub Container Registry
         run: |
-          echo "${{ secrets.KAMAL_REGISTRY_PASSWORD }}" | docker login -u barturba --password-stdin
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u barturba --password-stdin
 
       - name: Deploy with Kamal
         env:
-          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           KAMAL_HOST: ${{ secrets.KAMAL_HOST }}
           DOCKER_BUILDKIT: 1
@@ -214,8 +216,8 @@ jobs:
           sed -i "s/KAMAL_HOST_PLACEHOLDER/$KAMAL_HOST/g" config/deploy.tmp.yml
 
           # Validate required secrets are present
-          if [ -z "$KAMAL_REGISTRY_PASSWORD" ]; then
-            echo "Error: KAMAL_REGISTRY_PASSWORD secret is not set"
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "Error: GITHUB_TOKEN secret is not set"
             exit 1
           fi
 
