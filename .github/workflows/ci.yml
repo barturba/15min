@@ -111,7 +111,7 @@ jobs:
           fi
 
           echo "Installing JavaScript dependencies..."
-          npm ci
+          npm ci --include=optional
 
           echo "Building JavaScript assets..."
           npm run build
