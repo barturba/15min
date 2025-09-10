@@ -155,12 +155,16 @@ jobs:
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          KAMAL_HOST: ${{ secrets.KAMAL_HOST }}
           DOCKER_BUILDKIT: 1
         run: |
           # Create Rails master key file for Kamal
           mkdir -p config
           echo "$RAILS_MASTER_KEY" > config/master.key
           chmod 600 config/master.key
+
+          # Substitute environment variable in deploy.yml
+          sed -i "s/\${KAMAL_HOST}/$KAMAL_HOST/g" config/deploy.yml
 
           # Deploy directly from GitHub CI
           kamal deploy
