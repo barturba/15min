@@ -85,5 +85,3 @@ The application uses:
 - ESBuild for JavaScript bundling
 - Tailwind CSS for styling
 - Minimal Rails setup (no database, jobs, or other services)
-# Test deployment trigger
-# Deployment test triggered on Wed Sep 10 08:03:37 MDT 2025

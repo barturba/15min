@@ -7,7 +7,7 @@ image: barturba/15min
 # Deploy to these servers.
 servers:
   web:
-    - ${KAMAL_HOST} 
+    - "KAMAL_HOST_PLACEHOLDER"  # Will be replaced with actual host during deployment 
   # job:
   #   hosts:
   #     - your-job-server-host
@@ -36,8 +36,8 @@ env:
   secret:
     - RAILS_MASTER_KEY
   clear:
-    # Disable Solid Queue temporarily to fix app startup issues
-    # TODO: Re-enable once SolidQueue connection issues are resolved
+    # Solid Queue is disabled due to connection issues
+    # To re-enable: Remove this line and ensure Solid Queue database is properly configured
     SOLID_QUEUE_IN_PUMA: false
 
     # Set number of processes dedicated to Solid Queue (default: 1)

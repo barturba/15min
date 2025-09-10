@@ -138,7 +138,17 @@ jobs:
           echo "${{ secrets.KAMAL_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           : > ~/.ssh/known_hosts
-          for t in rsa ecdsa ed25519; do ssh-keyscan -T 15 -t $t ${{ secrets.KAMAL_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true; done
+          # Scan SSH host keys - fail if unable to verify host
+          for t in rsa ecdsa ed25519; do
+            if ! ssh-keyscan -T 15 -t $t ${{ secrets.KAMAL_HOST }} >> ~/.ssh/known_hosts 2>/dev/null; then
+              echo "Warning: Failed to scan $t key for ${{ secrets.KAMAL_HOST }}"
+            fi
+          done
+          # Ensure at least one key was found
+          if ! grep -q "${{ secrets.KAMAL_HOST }}" ~/.ssh/known_hosts; then
+            echo "Error: No SSH host keys found for ${{ secrets.KAMAL_HOST }}"
+            exit 1
+          fi
 
       - name: Install Kamal
         run: |
@@ -163,8 +173,12 @@ jobs:
           echo "$RAILS_MASTER_KEY" > config/master.key
           chmod 600 config/master.key
 
-          # Substitute environment variable in deploy.yml
-          sed -i "s/\${KAMAL_HOST}/$KAMAL_HOST/g" config/deploy.yml
+          # Create a temporary deploy config with substituted values
+          cp config/deploy.yml config/deploy.tmp.yml
+          sed -i "s/KAMAL_HOST_PLACEHOLDER/$KAMAL_HOST/g" config/deploy.tmp.yml
 
-          # Deploy directly from GitHub CI
-          kamal deploy
+          # Deploy directly from GitHub CI using temporary config
+          kamal deploy --config-file=config/deploy.tmp.yml
+
+          # Clean up temporary file
+          rm config/deploy.tmp.yml
