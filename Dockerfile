@@ -9,7 +9,7 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=ruby-3.2.9
-ARG BUN_VERSION=1.1.42
+ARG BUN_VERSION=1.1.38
 
 FROM docker.io/library/ruby:3.2.9-slim AS base
 
