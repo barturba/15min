@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   scan_ruby:
@@ -102,9 +102,31 @@ jobs:
 
       - name: Build assets
         run: |
+          # Validate required asset files exist
+          if [ ! -f "package.json" ]; then
+            echo "Error: package.json not found"
+            exit 1
+          fi
+
+          if [ ! -f "bun.lockb" ]; then
+            echo "Error: bun.lockb not found"
+            exit 1
+          fi
+
+          echo "Installing JavaScript dependencies..."
           bun install
+
+          echo "Building JavaScript assets..."
           bun run build
+
+          echo "Building CSS assets..."
           bun run build:css
+
+          echo "Validating asset compilation..."
+          if [ ! -d "app/assets/builds" ] || [ ! -f "app/assets/builds/application.js" ]; then
+            echo "Error: JavaScript assets not compiled correctly"
+            exit 1
+          fi
 
       - name: Run tests
         env:
@@ -191,8 +213,24 @@ jobs:
           cp config/deploy.yml config/deploy.tmp.yml
           sed -i "s/KAMAL_HOST_PLACEHOLDER/$KAMAL_HOST/g" config/deploy.tmp.yml
 
+          # Validate required secrets are present
+          if [ -z "$KAMAL_REGISTRY_PASSWORD" ]; then
+            echo "Error: KAMAL_REGISTRY_PASSWORD secret is not set"
+            exit 1
+          fi
+
+          if [ -z "$KAMAL_HOST" ]; then
+            echo "Error: KAMAL_HOST secret is not set"
+            exit 1
+          fi
+
           # Deploy directly from GitHub CI using temporary config
-          kamal deploy --config-file=config/deploy.tmp.yml
+          echo "Starting Kamal deployment..."
+          if ! kamal deploy --config-file=config/deploy.tmp.yml; then
+            echo "Kamal deployment failed. Checking logs..."
+            kamal app logs --config-file=config/deploy.tmp.yml || true
+            exit 1
+          fi
 
           # Clean up temporary file
           rm config/deploy.tmp.yml

@@ -16,6 +16,13 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 # Rails app lives here
 WORKDIR /rails
 
+# Validate Ruby version matches .ruby-version file
+COPY .ruby-version ./
+RUN if [ -f .ruby-version ] && [ "$(cat .ruby-version)" != "$RUBY_VERSION" ]; then \
+      echo "Ruby version mismatch: expected $(cat .ruby-version), got $RUBY_VERSION"; \
+      exit 1; \
+    fi
+
 # Install base packages (cached layer)
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update -qq && \
@@ -26,7 +33,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development:test"
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
