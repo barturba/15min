@@ -1,9 +1,9 @@
 class HomeController < ApplicationController
   def index
     # Track custom event for home page visits
-    track_custom_event('home_page_visit', {
+    track_custom_event("home_page_visit", {
       timestamp: Time.current,
-      page_title: 'Home Page'
+      page_title: "Home Page"
     })
   end
 

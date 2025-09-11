@@ -147,6 +147,8 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_HOST: https://us.i.posthog.com
           # REDIS_URL: redis://localhost:6379/0
         run: |
           # Create database
@@ -224,6 +226,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           KAMAL_HOST: ${{ secrets.KAMAL_HOST }}
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_HOST: https://us.i.posthog.com
           DOCKER_BUILDKIT: 1
         run: |
           # Create Rails master key file for Kamal

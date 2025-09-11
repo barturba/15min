@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     begin
       $posthog.capture({
         distinct_id: session.id || request.session_options[:id] || "anonymous-#{Time.now.to_i}",
-        event: 'page_view',
+        event: "page_view",
         properties: {
           url: request.url,
           path: request.path,
