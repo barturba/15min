@@ -85,3 +85,4 @@ The application uses:
 - ESBuild for JavaScript bundling
 - Tailwind CSS for styling
 - Minimal Rails setup (no database, jobs, or other services)
+# PostHog integration update
