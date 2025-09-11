@@ -1,7 +1,17 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .background { fill: #0d1f0d; stroke: #00ff41; stroke-width: 32; }
+      .hand { stroke: #39ff14; stroke-width: 40; stroke-linecap: round; }
+    </style>
+  </defs>
+
+  <!-- Full background rectangle for PNG export -->
+  <rect width="512" height="512" fill="#0d1f0d"/>
+
   <!-- Background circle - deep hacker green -->
-  <circle cx="256" cy="256" r="240" fill="#0d1f0d" stroke="#00ff41" stroke-width="32"/>
+  <circle cx="256" cy="256" r="240" class="background"/>
 
   <!-- Bold clock hand - ultra-visible bright green -->
-  <line x1="256" y1="256" x2="256" y2="120" stroke="#39ff14" stroke-width="40" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="256" y2="120" class="hand"/>
 </svg>
