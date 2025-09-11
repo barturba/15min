@@ -13,11 +13,11 @@
     <line x1="392" y1="256" x2="422" y2="256"/>
   </g>
 
-  <!-- Clock hands - much thicker for visibility -->
+  <!-- Clock hands - balanced thicknesses for better visual hierarchy -->
   <!-- Hour hand -->
-  <line x1="256" y1="256" x2="256" y2="160" stroke="#0f172a" stroke-width="24" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="256" y2="160" stroke="#0f172a" stroke-width="20" stroke-linecap="round"/>
   <!-- Minute hand -->
-  <line x1="256" y1="256" x2="340" y2="256" stroke="#0f172a" stroke-width="16" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="340" y2="256" stroke="#0f172a" stroke-width="18" stroke-linecap="round"/>
 
   <!-- Large center dot -->
   <circle cx="256" cy="256" r="20" fill="#0f172a"/>
