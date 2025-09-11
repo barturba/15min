@@ -92,9 +92,9 @@ builder:
   #   - GITHUB_TOKEN
   #   - RAILS_MASTER_KEY
 
-# Use a different ssh user than root
+# Use root user for SSH
 ssh:
-  user: app
+  user: root
 
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
