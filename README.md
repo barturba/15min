@@ -12,8 +12,9 @@ A minimal, modern single-page Rails application for tracking work start and end 
 - **Work End Time**: Automatically shows current time and updates every second
 - **Time Format**: MM/DD/YYYY HH:MM:SS
 - **Clipboard Copy**: Single click on any time field copies it to clipboard
-- **Modern UI**: Ultra minimal design with Tailwind CSS
+- **Modern UI**: Ultra minimal design with Tailwind CSS and hacker green theme
 - **Real-time Updates**: Times update automatically
+- **PWA Ready**: Installable as a progressive web app with custom icons
 
 ## Tech Stack
 
