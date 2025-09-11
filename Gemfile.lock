@@ -190,6 +190,8 @@ GEM
     parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
+    posthog-ruby (3.2.0)
+      concurrent-ruby (~> 1)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -369,6 +371,7 @@ DEPENDENCIES
   debug
   jsbundling-rails
   kamal
+  posthog-ruby
   propshaft
   puma (>= 5.0)
   rails (~> 8.0.2, >= 8.0.2.1)
