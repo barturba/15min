@@ -1,25 +1,25 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle -->
-  <circle cx="256" cy="256" r="240" fill="#1e3a8a" stroke="#0f172a" stroke-width="40"/>
+  <!-- Background circle - deep hacker green -->
+  <circle cx="256" cy="256" r="240" fill="#0d1f0d" stroke="#1a4d1a" stroke-width="40"/>
 
   <!-- Clock face -->
-  <circle cx="256" cy="256" r="190" fill="#ffffff" stroke="#1e3a8a" stroke-width="8"/>
+  <circle cx="256" cy="256" r="190" fill="#ffffff" stroke="#1a4d1a" stroke-width="8"/>
 
-  <!-- Main hour markers (only 4 cardinal directions) -->
-  <g stroke="#0f172a" stroke-width="16" stroke-linecap="round">
+  <!-- Main hour markers - bright matrix green -->
+  <g stroke="#00ff41" stroke-width="16" stroke-linecap="round">
     <line x1="256" y1="90" x2="256" y2="120"/>
     <line x1="256" y1="392" x2="256" y2="422"/>
     <line x1="90" y1="256" x2="120" y2="256"/>
     <line x1="392" y1="256" x2="422" y2="256"/>
   </g>
 
-  <!-- Clock hands - balanced thicknesses for better visual hierarchy -->
+  <!-- Clock hands - bright matrix green -->
   <!-- Hour hand -->
-  <line x1="256" y1="256" x2="256" y2="160" stroke="#0f172a" stroke-width="20" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="256" y2="160" stroke="#00ff41" stroke-width="20" stroke-linecap="round"/>
   <!-- Minute hand -->
-  <line x1="256" y1="256" x2="340" y2="256" stroke="#0f172a" stroke-width="18" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="340" y2="256" stroke="#00ff41" stroke-width="18" stroke-linecap="round"/>
 
   <!-- Large center dot -->
-  <circle cx="256" cy="256" r="20" fill="#0f172a"/>
-  <circle cx="256" cy="256" r="8" fill="#ffffff"/>
+  <circle cx="256" cy="256" r="20" fill="#1a4d1a"/>
+  <circle cx="256" cy="256" r="8" fill="#39ff14"/>
 </svg>
