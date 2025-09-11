@@ -13,10 +13,32 @@ class HomeController < ApplicationController
     return unless defined?($posthog)
 
     begin
+      # Build base properties for consistency
+      base_properties = {
+        # Screen/Screen Name
+        screen_name: "#{controller_name}##{action_name}",
+        screen_category: controller_name,
+
+        # URL Information
+        url: request.url,
+        path: request.path,
+        controller: controller_name,
+        action: action_name,
+
+        # Timing
+        timestamp: Time.current.to_i,
+
+        # Environment
+        environment: Rails.env
+      }
+
+      # Merge with custom properties
+      merged_properties = base_properties.merge(properties)
+
       $posthog.capture({
         distinct_id: session.id || request.session_options[:id] || "anonymous-#{Time.now.to_i}",
         event: event_name,
-        properties: properties
+        properties: merged_properties.compact
       })
     rescue => e
       Rails.logger.error("PostHog custom event error: #{e.message}")
@@ -28,10 +50,35 @@ class HomeController < ApplicationController
     return unless defined?($posthog)
 
     begin
+      # Build base properties for consistency
+      base_properties = {
+        # Screen/Screen Name
+        screen_name: "#{controller_name}##{action_name}",
+        screen_category: controller_name,
+
+        # URL Information
+        url: request.url,
+        path: request.path,
+        controller: controller_name,
+        action: action_name,
+
+        # Timing
+        timestamp: Time.current.to_i,
+
+        # Environment
+        environment: Rails.env,
+
+        # Disable person profile processing
+        "$process_person_profile" => false
+      }
+
+      # Merge with custom properties
+      merged_properties = base_properties.merge(properties)
+
       $posthog.capture({
         distinct_id: "anonymous-#{Time.now.to_i}",
         event: event_name,
-        properties: properties.merge("$process_person_profile" => false)
+        properties: merged_properties.compact
       })
     rescue => e
       Rails.logger.error("PostHog anonymous event error: #{e.message}")
