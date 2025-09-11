@@ -10,14 +10,14 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          primary: '#2563eb',
-          secondary: '#1e40af',
-          accent: '#3b82f6',
+          primary: '#1e3a8a',
+          secondary: '#0f172a',
+          accent: '#2563eb',
           light: '#dbeafe',
-          dark: '#1e3a8a',
+          dark: '#0f172a',
         },
         timer: {
-          work: '#2563eb',
+          work: '#1e3a8a',
           break: '#10b981',
           warning: '#f59e0b',
           danger: '#ef4444',
