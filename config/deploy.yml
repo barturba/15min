@@ -35,6 +35,7 @@ registry:
 env:
   secret:
     - RAILS_MASTER_KEY
+    - POSTHOG_API_KEY
   clear:
     # Solid Queue is disabled due to connection issues
     # To re-enable: Remove this line and ensure Solid Queue database is properly configured
