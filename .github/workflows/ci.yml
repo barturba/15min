@@ -15,46 +15,13 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  scan_ruby:
+  ci:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
-
-  lint:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
-
-  test:
-    runs-on: ubuntu-22.04
-
-    # services:
-    #  redis:
-    #    image: redis
-    #    ports:
-    #      - 6379:6379
-    #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
@@ -144,12 +111,17 @@ jobs:
             exit 1
           fi
 
+      - name: Scan for security vulnerabilities
+        run: bin/brakeman --no-pager
+
+      - name: Lint code
+        run: bin/rubocop -f github
+
       - name: Run tests
         env:
           RAILS_ENV: test
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
           POSTHOG_HOST: https://us.i.posthog.com
-          # REDIS_URL: redis://localhost:6379/0
         run: |
           # Create database
           bin/rails db:create || echo "Database creation failed, continuing..."
@@ -157,7 +129,7 @@ jobs:
           # Load schema
           bin/rails db:schema:load || echo "Schema load failed, continuing..."
 
-          # Run tests (skip asset compilation issues)
+          # Run tests
           bin/rails test || echo "Unit tests failed"
           bin/rails test:system || echo "System tests failed"
 
@@ -169,26 +141,8 @@ jobs:
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
 
-  deploy:
-    needs: [scan_ruby, lint, test]
-    runs-on: ubuntu-22.04
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: false
-
-      - name: Set up SSH
+      - name: Set up SSH for deployment
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.KAMAL_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -207,21 +161,25 @@ jobs:
           fi
 
       - name: Install Kamal
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: |
           gem install --user-install kamal
           echo "$(ruby -e 'print Gem.user_dir')/bin" >> $GITHUB_PATH
 
       - name: Set up Docker Buildx
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             network=host
 
       - name: Log in to GitHub Container Registry
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u barturba --password-stdin
 
       - name: Deploy with Kamal
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
