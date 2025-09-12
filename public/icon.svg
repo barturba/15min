@@ -1,6 +1,6 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle - deep hacker green -->
-  <circle cx="256" cy="256" r="240" fill="#0d1f0d" stroke="#00ff41" stroke-width="32"/>
+  <!-- Background circle - transparent with green border -->
+  <circle cx="256" cy="256" r="240" fill="transparent" stroke="#00ff41" stroke-width="32"/>
 
   <!-- Bold clock hand - ultra-visible bright green -->
   <line x1="256" y1="256" x2="256" y2="120" stroke="#39ff14" stroke-width="40" stroke-linecap="round"/>

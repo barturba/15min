@@ -33,16 +33,16 @@ fi
 TEMP_DIR="/tmp/icon_generation_$$"
 mkdir -p "$TEMP_DIR"
 
-# Generate main PNG icons
+# Generate main PNG icons with transparency
 echo "📱 Generating main PNG icons..."
-rsvg-convert -h 512 -w 512 public/icon.svg -o public/icon.png
-rsvg-convert -h 192 -w 192 public/icon.svg -o public/icon-192.png
+rsvg-convert -h 512 -w 512 --background-color=none public/icon.svg -o public/icon.png
+rsvg-convert -h 192 -w 192 --background-color=none public/icon.svg -o public/icon-192.png
 
-# Generate favicon sizes
+# Generate favicon sizes with transparency
 echo "🎯 Generating favicon sizes..."
-rsvg-convert -h 16 -w 16 public/icon.svg -o "$TEMP_DIR/favicon-16.png"
-rsvg-convert -h 32 -w 32 public/icon.svg -o "$TEMP_DIR/favicon-32.png"
-rsvg-convert -h 48 -w 48 public/icon.svg -o "$TEMP_DIR/favicon-48.png"
+rsvg-convert -h 16 -w 16 --background-color=none public/icon.svg -o "$TEMP_DIR/favicon-16.png"
+rsvg-convert -h 32 -w 32 --background-color=none public/icon.svg -o "$TEMP_DIR/favicon-32.png"
+rsvg-convert -h 48 -w 48 --background-color=none public/icon.svg -o "$TEMP_DIR/favicon-48.png"
 
 # Combine into favicon.ico
 echo "🔗 Creating favicon.ico..."
@@ -60,9 +60,9 @@ echo "  📄 public/icon.png (512x512)"
 echo "  📄 public/icon-192.png (192x192)"
 echo "  🎯 public/favicon.ico (16x16, 32x32, 48x48)"
 echo ""
-echo "${GREEN}Colors preserved:${NC}"
-echo "  🟢 Deep hacker green: #0d1f0d"
-echo "  🟢 Bright matrix green: #00ff41"
-echo "  🟢 Electric lime: #39ff14"
+echo "${GREEN}Features:${NC}"
+echo "  🟢 Transparent background"
+echo "  🟢 Bright matrix green border: #00ff41"
+echo "  🟢 Electric lime clock hand: #39ff14"
 echo ""
-echo "🎉 All icons regenerated successfully!"
+echo "🎉 All icons regenerated with transparency!"
