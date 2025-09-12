@@ -44,9 +44,9 @@ rsvg-convert -h 16 -w 16 --background-color=none public/icon.svg -o "$TEMP_DIR/f
 rsvg-convert -h 32 -w 32 --background-color=none public/icon.svg -o "$TEMP_DIR/favicon-32.png"
 rsvg-convert -h 48 -w 48 --background-color=none public/icon.svg -o "$TEMP_DIR/favicon-48.png"
 
-# Combine into favicon.ico
+# Combine into favicon.ico with transparency preserved
 echo "🔗 Creating favicon.ico..."
-magick "$TEMP_DIR/favicon-16.png" "$TEMP_DIR/favicon-32.png" "$TEMP_DIR/favicon-48.png" public/favicon.ico
+magick -background transparent "$TEMP_DIR/favicon-16.png" "$TEMP_DIR/favicon-32.png" "$TEMP_DIR/favicon-48.png" public/favicon.ico
 
 # Cleanup
 rm -rf "$TEMP_DIR"
